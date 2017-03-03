@@ -1,16 +1,16 @@
-EasyPoll - MongoDB
+EasyPoll
 ======================================
 
-Lightweight Node.js and MongoDB polling tool
+Lightweight, easy to use polling tool that allows teaching staff to gather asynchronous feedback within the Cardiff University Learning Central Virtual Learning Environment (Blackboard) for a variety of purposes, including gauging student opinion, gathering feedback, facilitating voting and stimulating thought and debate.
 
-##About
+##Technical platform
 
-EasyPoll uses the window location as a unique referrer and can be dropped onto any webpage as a simple polling tool or can be adapted to create more dymamic polling experiences.  If you are interested in Node.js and MongoDB application solutions then EasyPoll will get you started.
+Node.js and MongoDB
 
-##Lightweight
-
-I have deliberately tried to keep the application as bare bones as possible to allow rapid development, Mocha tests are included, views are pretty basic, I have added a light Bootstrap touch for styling and a little JavaScript to access localStorage on the client-side.
-
-##Platform
+###Platform
 
 [mongodb.com](https://www.mongodb.com/)
+
+###Original source
+
+[github.com/chrisjohndigital](https://github.com/chrisjohndigital/EasyPoll)
