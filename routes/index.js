@@ -13,6 +13,7 @@ var referrer = '';
 var total = 0;
 var ratings = 0;
 var results = '';
+var average = 0;
 
 var findReferrer = function(db, query, callback) {
    //Create index on referrer to ensure no duplicates and allowed, needed for upsert
@@ -59,10 +60,11 @@ var getFormattedUrl = function(req) {
 router.get('/', function(req, res, next) {
     var mongodbaddress = req.app.get('mongodbaddress');
     id = '';
+    referrer = (sanitizeHtml(getFormattedUrl(req))).replace(/[^A-Za-z0-9]/g, '');
     total = 0;
     ratings = 0;
     results='';
-    referrer = (sanitizeHtml(getFormattedUrl(req))).replace(/[^A-Za-z0-9]/g, '');
+    average = 0;
     console.log ('Instance referrer: ' + referrer);
     mongoclient.connect(mongodbaddress, function(err, db) {
         //assert.equal(null, err);
@@ -71,16 +73,17 @@ router.get('/', function(req, res, next) {
                 db.close();
                 if (isNaN(total)==false && isNaN(ratings)==false) {
                     if (total!=0) {
-                        results = ('Average ' + (ratings/total).toFixed(2) + '.  Total votes: ' + (total));
+                        average = (ratings/total).toFixed(2);
+                        results = ('Average ' + average + '.  Total votes: ' + (total));
                         console.log (results);
                     }
                 }
-                res.render('index', { title: 'EasyPoll', description: 'Rate this', id: id, results: results});
+                res.render('index', { title: 'EasyPoll', description: 'Rate this', id: id, results: results, average: average});
             } else {                    
                 insertRecord(db, req, function() {
                     findReferrer(db, {'referrer': referrer}, function() {
                         db.close();
-                        res.render('index', { title: 'EasyPoll', description: 'Rate this', id: id, results: results});
+                        res.render('index', { title: 'EasyPoll', description: 'Rate this', id: id, results: results, average: average});
                     });
                 });
             }

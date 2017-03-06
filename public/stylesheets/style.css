@@ -7,4 +7,31 @@ a {
   color: #00B7FF;
 }
 
+/*Enable before launch*/
 #ratings-form {display:none}
+
+.lbl {display:none}
+
+input[type="radio"] {
+    opacity:0;
+}
+.radio-inline {
+    width: 30px;
+    height: 30px;
+    background-repeat:no-repeat;
+}
+.radio-inline-0 {
+    background-image: url(../images/star-1.png);
+}
+.radio-inline-1, .radio-inline-2, .radio-inline-3, .radio-inline-4 {
+    background-image: url(../images/star-2.png);
+}
+.radio-inline-5 {
+    background-image: url(../images/star-3.png);
+}
+.radio-inline-6, .radio-inline-7, .radio-inline-8, .radio-inline-9 {
+    background-image: url(../images/star-4.png);
+}
+.radio-inline-10 {
+    background-image: url(../images/star-5.png);
+}

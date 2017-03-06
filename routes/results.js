@@ -43,9 +43,17 @@ router.post('/', function(req, res, next) {
                 ++total;
                 updateRecord(db, {'_id': objectid(req.query.id)}, function() {
                     db.close();
+                    console.log ('Referrer: ' + req.headers.referer);
+                    console.log ('ID: ' + req.query.id);
+                    console.log ('Rating: ' + req.body.rating);
+                    console.log ('Message body: ' + req.body);
                     res.redirect (req.headers.referer);
                 });  
             } else {
+                console.log ('Referrer: ' + req.headers.referer);
+                console.log ('ID: ' + req.query.id);
+                console.log ('Rating: ' + req.body.rating);
+                console.log ('Message body: ' + req.body);
                 res.redirect (req.headers.referer);
             }
         });

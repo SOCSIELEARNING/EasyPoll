@@ -6,11 +6,27 @@
         <% include ratings.ejs %>
         <form action="/results?id=<%= id %>" method="post" id="ratings-form">
             <div class="form-group">
-                <label class="radio-inline"><input type="radio" name="rating" value="1" required>1</label>
-                <label class="radio-inline"><input type="radio" name="rating" value="2" required>2</label>
-                <label class="radio-inline"><input type="radio" name="rating" value="3" required>3</label>
-                <label class="radio-inline"><input type="radio" name="rating" value="4" required>4</label>
-                <label class="radio-inline"><input type="radio" name="rating" value="5" required>5</label>
+                <% if (average!='' && average!=0) {%>
+                    <% for (var i=1; i<=5; i++) { %>
+                        <% if (average>=i) {%>
+                            <label class="radio-inline radio-inline-10"><input class="radio" type="radio" name="rating" value="<%= i %>" required><span class="lbl"><%= i %></span></label>
+                        <% } else if (average<i && average>i-1) { %>
+                            <% if ((((String(average)).split('.'))[1]).charAt(0)=='0') {%>                 
+                                <label class="radio-inline radio-inline-1"><input class="radio" type="radio" name="rating" value="<%= i %>" required><span class="lbl"><%= i %></span></label>
+                            <% } else { %>
+                                <label class="radio-inline radio-inline-<%= (((String(average)).split('.'))[1]).charAt(0) %>"><input type="radio" name="rating" value="<%= i %>" required><span class="lbl"><%= i %></span></label>
+                            <% } %>
+                        <% } else { %>
+                             <label class="radio-<%= i %> radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="<%= i %>" required><span class="lbl"><%= i %></span></label>
+                        <% } %>
+                    <% } %>
+                <% } else { %>
+                    <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="1" required><span class="lbl">1</span></label>
+                    <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="2" required><span class="lbl">2</span></label>
+                    <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="3" required><span class="lbl">3</span></label>
+                    <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="4" required><span class="lbl">4</span></label>
+                    <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="5" required><span class="lbl">5</span></label>
+                <% } %>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" id="ratings-form-submit" disabled />

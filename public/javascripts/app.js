@@ -21,11 +21,12 @@ $( document ).ready(function() {
        setLocalStorageData();
     });
     
-    $( '.radio-inline' ).click(function( event ) {
+    $( '.radio' ).click(function( event ) {
         $( '#ratings-form-submit' ).attr('disabled', false);
         $( '#ratings-form' ).submit();
     });
     
+    //Enable before launch
     checkLocalStorageData();
     
 });
