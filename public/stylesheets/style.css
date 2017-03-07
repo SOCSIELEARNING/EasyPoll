@@ -8,13 +8,10 @@ a {
 }
 
 /*Enable before launch*/
-#ratings-form {display:none}
+#ratings-form, #ratings-form-submit {display:none}
 
-.lbl {display:none}
+.lbl, input[type="radio"] {display:none}
 
-input[type="radio"] {
-    opacity:0;
-}
 .radio-inline {
     width: 30px;
     height: 30px;

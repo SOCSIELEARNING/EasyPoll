@@ -11,9 +11,9 @@ var assert = require('assert');
 var id = '';
 var referrer = '';
 var total = 0;
-var ratings = 0;
-var results = '';
-var average = 0;
+var rating = 0;
+var ratings = [];
+var labels = [];
 
 var findReferrer = function(db, query, callback) {
    //Create index on referrer to ensure no duplicates and allowed, needed for upsert
@@ -24,9 +24,23 @@ var findReferrer = function(db, query, callback) {
       if (doc != null) {
           console.log ('Poll referrer found in database - Passing ratings to view');
           console.dir(doc);
-          ratings = (Number(doc.ratings));
-          total = (Number(doc.total));
           id = doc._id;
+          if (doc.total!=undefined) {
+              if (isNaN(Number(doc.total))==false) {
+                  total = (Number(doc.total));  
+              }
+          }
+          if (doc.rating!=undefined) {
+              if (isNaN(Number(doc.rating))==false) {
+                rating = (Number(doc.rating));    
+              }
+          }
+          if (doc.labels!=undefined) {
+              labels = doc.labels;
+          }
+          if (doc.ratings!=undefined) {
+              ratings = doc.ratings;
+          }
         } else {
           console.log ('Finished searching database for referrer - Exiting');
           callback();
@@ -34,12 +48,12 @@ var findReferrer = function(db, query, callback) {
    });
 };
 var insertRecord = function(db, req, callback) {
-    console.log ('Creating empty record using updateOne to make sure no duplicates are created');
+    console.log ('Creating empty record using update to make sure no duplicates are created');
     db.collection('referrer').update(
         { referrer: referrer },
         {
             //Only update if a new document is inserted
-            $setOnInsert: { total: 0, ratings: 0, referrer: referrer }
+            $setOnInsert: { total: 0, rating: 0, ratings: [], referrer: referrer, creator: '', title: '', description: '', responselimit: 1, chngresponse: false, creationdate: new Date(), releasedate: new Date(), manualrelease: false, labels: ['1','2','3','4','5'], entries: [], flag1: false, flag2: false, flag3: false, meta1: '', meta2: '', meta3: '' }
         },
             //Inserts a single document if non exists
         { upsert: true },
@@ -62,33 +76,29 @@ router.get('/', function(req, res, next) {
     id = '';
     referrer = (sanitizeHtml(getFormattedUrl(req))).replace(/[^A-Za-z0-9]/g, '');
     total = 0;
-    ratings = 0;
-    results='';
-    average = 0;
+    rating = 0;
+    ratings = [];
+    labels = [];
     console.log ('Instance referrer: ' + referrer);
     mongoclient.connect(mongodbaddress, function(err, db) {
         //assert.equal(null, err);
         findReferrer(db, {'referrer': referrer}, function() {
             if (id!='') {
                 db.close();
-                if (isNaN(total)==false && isNaN(ratings)==false) {
-                    if (total!=0) {
-                        average = (ratings/total).toFixed(2);
-                        results = ('Average ' + average + '.  Total votes: ' + (total));
-                        console.log (results);
-                    }
-                }
-                res.render('index', { title: 'EasyPoll', description: 'Rate this', id: id, results: results, average: average});
+                res.render('index', { title: 'EasyPoll', id: id, total: total, rating: rating, ratings: ratings, labels: labels});
             } else {                    
                 insertRecord(db, req, function() {
                     findReferrer(db, {'referrer': referrer}, function() {
                         db.close();
-                        res.render('index', { title: 'EasyPoll', description: 'Rate this', id: id, results: results, average: average});
+                        res.render('index', { title: 'EasyPoll', id: id, total: total, rating: rating, ratings: ratings, labels: labels});
                     });
                 });
             }
         });
     });
+    
+    
+    
 });
 
 module.exports = router;

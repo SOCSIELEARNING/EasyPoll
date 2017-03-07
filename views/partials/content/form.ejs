@@ -1,36 +1,22 @@
-<div class="panel panel-success">
-    <div class="panel-heading">
-        <p class="panel-title"><%= description %></p>
+<form action="/results?id=<%= id %>" method="post" id="ratings-form">
+    <div class="form-group pull-right">
+        <input type="submit" value="Save" class="btn btn-default" id="ratings-form-submit" disabled />
     </div>
-    <div class="panel-body">  
-        <% include ratings.ejs %>
-        <form action="/results?id=<%= id %>" method="post" id="ratings-form">
-            <div class="form-group">
-                <% if (average!='' && average!=0) {%>
-                    <% for (var i=1; i<=5; i++) { %>
-                        <% if (average>=i) {%>
-                            <label class="radio-inline radio-inline-10"><input class="radio" type="radio" name="rating" value="<%= i %>" required><span class="lbl"><%= i %></span></label>
-                        <% } else if (average<i && average>i-1) { %>
-                            <% if ((((String(average)).split('.'))[1]).charAt(0)=='0') {%>                 
-                                <label class="radio-inline radio-inline-1"><input class="radio" type="radio" name="rating" value="<%= i %>" required><span class="lbl"><%= i %></span></label>
-                            <% } else { %>
-                                <label class="radio-inline radio-inline-<%= (((String(average)).split('.'))[1]).charAt(0) %>"><input type="radio" name="rating" value="<%= i %>" required><span class="lbl"><%= i %></span></label>
-                            <% } %>
-                        <% } else { %>
-                             <label class="radio-<%= i %> radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="<%= i %>" required><span class="lbl"><%= i %></span></label>
-                        <% } %>
+    <div class="form-group">
+        <% if (labels.length!=0) {%>
+            <% for (var i=0; i<labels.length; i++) { %>
+                <% if (((rating/total).toFixed(2))>=(i+1)) {%>
+                    <label class="radio-inline radio-inline-10"><input class="radio" type="radio" name="rating" value="<%= i+1 %>" required><span class="lbl"><%= labels[i] %></span></label>
+                <% } else if (((rating/total).toFixed(2))>i && ((rating/total).toFixed(2))<(i+1)) { %>
+                    <% if ((((String(((rating/total).toFixed(2)))).split('.'))[1]).charAt(0)=='0') {%>                 
+                        <label class="radio-inline radio-inline-1"><input class="radio" type="radio" name="rating" value="<%= i+1 %>" required><span class="lbl"><%= labels[i] %></span></label>
+                    <% } else { %>
+                        <label class="radio-inline radio-inline-<%= (((String(((rating/total).toFixed(2)))).split('.'))[1]).charAt(0) %>"><input type="radio" name="rating" value="<%= i+1 %>" required><span class="lbl"><%= labels[i] %></span></label>
                     <% } %>
                 <% } else { %>
-                    <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="1" required><span class="lbl">1</span></label>
-                    <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="2" required><span class="lbl">2</span></label>
-                    <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="3" required><span class="lbl">3</span></label>
-                    <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="4" required><span class="lbl">4</span></label>
-                    <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="5" required><span class="lbl">5</span></label>
+                     <label class="radio-inline radio-inline-0"><input class="radio" type="radio" name="rating" value="<%= i+1 %>" required><span class="lbl"><%= labels[i] %></span></label>
                 <% } %>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" id="ratings-form-submit" disabled />
-            </div>
-        </form>
+            <% } %>
+        <% } %>
     </div>
-</div>
+</form>

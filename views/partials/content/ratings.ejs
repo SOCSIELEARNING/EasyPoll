@@ -1,7 +1,10 @@
-<% if (results!='') {%>
-    <div class="panel panel-default ratings">
-        <div class="panel-body">  
-            <%= results %>
-        </div>
+<% if (total!=0) {%>
+    <div class="ratings">  
+        <p><%= 'Average ' + ((rating/total).toFixed(2)) + '.  Total votes: ' + (total) %></p>
+        <!--<% if (ratings.length!=0) {%>
+            <% for (var i=0; i<ratings.length; i++) { %>
+                <p>Rating <%= i+1 %>: <%= ratings[i] %></p>
+            <% } %>
+        <% } %>-->
     </div>
 <% } %>
