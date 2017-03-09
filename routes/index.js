@@ -14,6 +14,7 @@ var total = 0;
 var rating = 0;
 var ratings = [];
 var labels = [];
+var languagePack = ['EasyPoll', 'Select a star to add your rating to this item', 'Responses:'];
 
 var findReferrer = function(db, query, callback) {
    //Create index on referrer to ensure no duplicates and allowed, needed for upsert
@@ -85,12 +86,12 @@ router.get('/', function(req, res, next) {
         findReferrer(db, {'referrer': referrer}, function() {
             if (id!='') {
                 db.close();
-                res.render('index', { title: 'EasyPoll', id: id, total: total, rating: rating, ratings: ratings, labels: labels});
+                res.render('index', { languagePack: languagePack, id: id, total: total, rating: rating, ratings: ratings, labels: labels});
             } else {                    
                 insertRecord(db, req, function() {
                     findReferrer(db, {'referrer': referrer}, function() {
                         db.close();
-                        res.render('index', { title: 'EasyPoll', id: id, total: total, rating: rating, ratings: ratings, labels: labels});
+                        res.render('index', { languagePack: languagePack, id: id, total: total, rating: rating, ratings: ratings, labels: labels});
                     });
                 });
             }

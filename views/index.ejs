@@ -7,8 +7,15 @@
       <div class="container-fluid" role='main'>
           <div class="panel panel-default">
                 <div class="panel-body">  
-                    <% include partials/content/form.ejs %>
-                    <% include partials/content/ratings.ejs %>
+                    <div class="easypoll-form col-md-4">
+                        <% include partials/content/form.ejs %>
+                    </div>
+                    <div class="easypoll-ratings col-md-2">  
+                        <% include partials/content/ratings.ejs %>
+                    </div>
+                    <div class="col-md-6 hidden-xs">  
+                        <% include partials/content/chart.ejs %>
+                    </div>
                     <% include partials/template/foot.ejs %>
               </div>
           </div>

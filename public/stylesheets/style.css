@@ -1,13 +1,18 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-family:'Open Sans',Helvetica,Arial,sans-serif;
+    margin-top:20px
 }
 
-a {
-  color: #00B7FF;
+.easypoll-ratings {text-align:center}
+
+h1 {
+    font-size:5.0em;
+    margin-bottom:0px
+}
+h2 {
+    margin-top:0px
 }
 
-/*Enable before launch*/
 #ratings-form, #ratings-form-submit {display:none}
 
 .lbl, input[type="radio"] {display:none}
