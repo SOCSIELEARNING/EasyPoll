@@ -14,7 +14,7 @@ var total = 0;
 var rating = 0;
 var ratings = [];
 var labels = [];
-var languagePack = ['EasyPoll', 'Select a star to add your rating to this item', 'Responses:'];
+var languagePack = ['EasyPoll', 'Select a star to add your rating to this item', 'Responses:', 'Average'];
 
 var findReferrer = function(db, query, callback) {
    //Create index on referrer to ensure no duplicates and allowed, needed for upsert

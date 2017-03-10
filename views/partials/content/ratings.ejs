@@ -1,4 +1,8 @@
 <% if (total!=0) {%>
-    <h1><%= ((rating/total).toFixed(2)) %></h1>
-    <h2><%= languagePack[2] %> <%= total %></h2>
+    <div class="easypoll-ratings">
+        <p><%= languagePack[3] %></p>
+        <h1><%= ((rating/total).toFixed(2)) %></h1>
+        <% include star-rating.ejs %>
+        <p><%= languagePack[2] %> <%= total %></p>
+    </div>
 <% } %>

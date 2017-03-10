@@ -5,23 +5,22 @@ body {
 
 .easypoll-ratings {text-align:center}
 
-h1 {
-    font-size:5.0em;
-    margin-bottom:0px
-}
-h2 {
-    margin-top:0px
-}
+h1, h2, p {margin:0px; padding:0px}
+h1 {font-size:5.0em}
 
 #ratings-form, #ratings-form-submit {display:none}
 
 .lbl, input[type="radio"] {display:none}
 
-.radio-inline {
+.easypoll-radio {
     width: 30px;
     height: 30px;
     background-repeat:no-repeat;
+    display:inline-block;
+    margin:3px;
 }
+.easypoll-form label {cursor:pointer}
+
 .radio-inline-0 {
     background-image: url(../images/star-1.png);
 }
@@ -36,4 +35,10 @@ h2 {
 }
 .radio-inline-10 {
     background-image: url(../images/star-5.png);
+}
+.radio-inline-true {
+    background-image: url(../images/star-5-blue.png);
+}
+.radio-inline-false {
+    background-image: url(../images/star-1-blue.png);
 }
