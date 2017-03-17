@@ -86,9 +86,11 @@ $( document ).ready(function() {
     var responseRecorded = false;
     var responseValue = languageArray[3];
     if (prevResponse==false) {
-        if ($( '#ratings-form-submit' )!==undefined) {
+        if ($( '#ratings-form-submit' )!==undefined && $( '#ratings-form' )!==undefined) {
             $( '#ratings-form-submit' ).css ('display', 'block');
+            $( '#ratings-form' ).css('display', 'block');
         }
+        
         if ($( '#ratings-form' )!==undefined) {
             $( '#ratings-form' ).submit(function( event ) {
                 if (responseRecorded==false) {
@@ -98,24 +100,21 @@ $( document ).ready(function() {
         }
         $('.easypoll-form').find('.radio').click(function( event ) {
             if ($('input[name=rating]:checked').val()!==undefined) {
+                responseRecorded=true;
                 responseValue = String ($('input[name=rating]:checked').val());
-            }
-            responseRecorded=true;
-            setLocalStorageData(responseValue);
-            if ($( '#ratings-form-submit' )!==undefined) {
-                $( '#ratings-form-submit' ).attr('disabled', false);
-            }
-            if ($( '#ratings-form' )!==undefined) {
-                $( '#ratings-form' ).submit();
+                setLocalStorageData(responseValue);
+                if ($( '#ratings-form-submit' )!==undefined) {
+                    $( '#ratings-form-submit' ).attr('disabled', false);
+                }
+                if ($( '#ratings-form' )!==undefined) {
+                    $( '#ratings-form' ).submit();
+                }
             }
         });
     } else {
         if (isNaN(prevResponse)==false) {
             drawPreviousResponse(prevResponse, $('.easypoll-form'));
         }
-    }
-    if ($( '#ratings-form' )!==undefined) {
-        $( '#ratings-form' ).css('display', 'block');
     }
     if ($('#easypoll-chart').length!=0 && $('#easypoll-chart').attr('data-ratings')!=undefined && $('#easypoll-chart').attr('data-total')!=undefined) {
         drawBarChart($('#easypoll-chart').attr('data-ratings'),$('#easypoll-chart').attr('data-total'));
