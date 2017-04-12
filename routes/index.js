@@ -14,12 +14,13 @@ var total = 0;
 var rating = 0;
 var ratings = [];
 var labels = [];
-var languagePack = ['EasyPoll', 'Select a star to add your rating to this item', 'Responses:', 'Average'];
+
+var whitelist = [];
 
 var findReferrer = function(db, query, callback) {
    //Create index on referrer to ensure no duplicates and allowed, needed for upsert
-   db.collection('referrer').createIndex( {'referrer': 1}, { unique: true } )
-   var cursor = db.collection('referrer').find( query );
+   db.collection('polls').createIndex( {'referrer': 1}, { unique: true } )
+   var cursor = db.collection('polls').find( query );
    cursor.each(function(err, doc) {
       //assert.equal(err, null);
       if (doc != null) {
@@ -50,7 +51,7 @@ var findReferrer = function(db, query, callback) {
 };
 var insertRecord = function(db, req, callback) {
     console.log ('Creating empty record using update to make sure no duplicates are created');
-    db.collection('referrer').update(
+    db.collection('polls').update(
         { referrer: referrer },
         {
             //Only update if a new document is inserted
@@ -72,34 +73,54 @@ var getFormattedUrl = function(req) {
     });
 }
 
+var checkAgainstWhitelist = function(referrer) {
+    var isFound=false;
+    if (whitelist.length > 0) {
+        for (var i=0; i<whitelist.length; ++i) {
+            if ((whitelist[i]).indexOf(referrer)!=-1) {
+                isFound=true;
+            }
+        }
+    } else {
+        isFound=true;
+    }
+    return (isFound);
+}
+
 router.get('/', function(req, res, next) {
     var mongodbaddress = req.app.get('mongodbaddress');
     id = '';
     referrer = (sanitizeHtml(getFormattedUrl(req))).replace(/[^A-Za-z0-9]/g, '');
-    total = 0;
-    rating = 0;
-    ratings = [];
-    labels = [];
-    console.log ('Instance referrer: ' + referrer);
-    mongoclient.connect(mongodbaddress, function(err, db) {
-        //assert.equal(null, err);
-        findReferrer(db, {'referrer': referrer}, function() {
-            if (id!='') {
-                db.close();
-                res.render('index', { languagePack: languagePack, id: id, total: total, rating: rating, ratings: ratings, labels: labels});
-            } else {                    
-                insertRecord(db, req, function() {
-                    findReferrer(db, {'referrer': referrer}, function() {
+    if (referrer!='') {
+        var whiteListed = checkAgainstWhitelist(referrer);
+        if (whiteListed==true) {
+            total = 0;
+            rating = 0;
+            ratings = [];
+            labels = [];
+            console.log ('Instance referrer: ' + referrer);
+            mongoclient.connect(mongodbaddress, function(err, db) {
+                //assert.equal(null, err);
+                findReferrer(db, {'referrer': referrer}, function() {
+                    if (id!='') {
                         db.close();
-                        res.render('index', { languagePack: languagePack, id: id, total: total, rating: rating, ratings: ratings, labels: labels});
-                    });
+                        res.render('index', { languagePack: req.app.get('languagePack'), id: id, total: total, rating: rating, ratings: ratings, labels: labels});
+                    } else {                    
+                        insertRecord(db, req, function() {
+                            findReferrer(db, {'referrer': referrer}, function() {
+                                db.close();
+                                res.render('index', { languagePack: req.app.get('languagePack'), id: id, total: total, rating: rating, ratings: ratings, labels: labels});
+                            });
+                        });
+                    }
                 });
-            }
-        });
-    });
-    
-    
-    
+            });
+        } else {
+            res.render('error', { message: (req.app.get('languagePack'))[5], error: {status: null, stack: null}});
+        }
+    } else {
+        res.render('error', { message: (req.app.get('languagePack'))[4], error: {status: null, stack: null}});
+    }
 });
 
 module.exports = router;
