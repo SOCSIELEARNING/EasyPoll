@@ -16,6 +16,7 @@ app.set('view engine', 'ejs');
 //Development service
 app.set('mongodbaddress', 'mongodb://localhost:27017/easypoll_development');
 app.set('languagePack', ['EasyPoll', 'Select a star to add your rating to this item', 'Responses:', 'Average', 'No referrer found', 'Unauthorised access']);
+app.set('whitelist', []);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

@@ -15,8 +15,6 @@ var rating = 0;
 var ratings = [];
 var labels = [];
 
-var whitelist = [];
-
 var findReferrer = function(db, query, callback) {
    //Create index on referrer to ensure no duplicates and allowed, needed for upsert
    db.collection('polls').createIndex( {'referrer': 1}, { unique: true } )
@@ -73,7 +71,7 @@ var getFormattedUrl = function(req) {
     });
 }
 
-var checkAgainstWhitelist = function(referrer) {
+var checkAgainstWhitelist = function(referrer, whitelist) {
     var isFound=false;
     if (whitelist.length > 0) {
         for (var i=0; i<whitelist.length; ++i) {
@@ -92,7 +90,7 @@ router.get('/', function(req, res, next) {
     id = '';
     referrer = (sanitizeHtml(getFormattedUrl(req))).replace(/[^A-Za-z0-9]/g, '');
     if (referrer!='') {
-        var whiteListed = checkAgainstWhitelist(referrer);
+        var whiteListed = checkAgainstWhitelist(referrer, req.app.get('whitelist'));
         if (whiteListed==true) {
             total = 0;
             rating = 0;

@@ -9,8 +9,6 @@ var rating = 0;
 var total = 0;
 var ratings = [];
 
-var whitelist = [];
-
 var findRecord = function(db, query, callback) {
    var cursor = db.collection('polls').find( query );
    cursor.each(function(err, doc) {
@@ -37,8 +35,7 @@ var updateRecord = function(db, query, callback) {
    });
 };
 
-var checkAgainstWhitelist = function(referrer) {
-    //console.log ('checkAgainstWhitelist');
+var checkAgainstWhitelist = function(referrer, whitelist) {
     var isFound=false;
     if (whitelist.length > 0) {
         for (var i=0; i<whitelist.length; ++i) {
@@ -54,8 +51,7 @@ var checkAgainstWhitelist = function(referrer) {
 
 router.post('/', function(req, res, next) {
     if (req.headers.referer!='') {
-        var whiteListed = checkAgainstWhitelist(req.headers.referer);
-        //console.log (whiteListed);
+        var whiteListed = checkAgainstWhitelist(req.headers.referer, req.app.get('whitelist'));
         if (whiteListed==true) {    
             var mongodbaddress = req.app.get('mongodbaddress');
             mongoclient.connect(mongodbaddress, function(err, db) {
