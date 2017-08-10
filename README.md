@@ -3,7 +3,7 @@
 
 Lightweight, easy to use polling tool that allows teaching staff to gather asynchronous feedback within the Cardiff University Learning Central Virtual Learning Environment (Blackboard) for a variety of purposes, including gauging student opinion, gathering feedback, facilitating voting and stimulating thought and debate.
 
-# Embed code
+## Embed code
 
 <iframe width="100%" height="280" src="https://example.com/?poll=uniquepollid"></iframe>
 
