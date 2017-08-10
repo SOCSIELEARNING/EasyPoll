@@ -1,14 +1,11 @@
-body {
-    font-family:'Open Sans',Helvetica,Arial,sans-serif;
-    margin-top:20px
-}
-
 .easypoll-ratings {text-align:center}
+.easypoll-chart {overflow:hidden}
 
-h1, h2, p {margin:0px; padding:0px}
-h1 {font-size:5.0em}
+.jumbotron h1 {font-size:2.0em}
 
 #ratings-form, #ratings-form-submit {display:none}
+
+.easypoll-form label {cursor:pointer}
 
 .lbl, input[type="radio"] {display:none}
 
@@ -19,7 +16,6 @@ h1 {font-size:5.0em}
     display:inline-block;
     margin:3px;
 }
-.easypoll-form label {cursor:pointer}
 
 .radio-inline-0 {
     background-image: url(../images/star-1.png);
@@ -41,4 +37,8 @@ h1 {font-size:5.0em}
 }
 .radio-inline-false {
     background-image: url(../images/star-1-blue.png);
+}
+@media handheld,only screen and (min-width:0) and (max-width:380px), only screen and (max-device-width:380px){
+    .col-xs-6 {width:100%; float:none}
+    .easypoll-previous-results {display:none}
 }

@@ -1,0 +1,10 @@
+<% if ( typeof total != 'undefined' &&  typeof rating != 'undefined' ) {%>
+    <% if (total!=0) {%>
+        <div class="easypoll-ratings">
+            <p><%= languagePack[3] %></p>
+            <h1><%= ((rating/total).toFixed(2)) %></h1>
+            <% include star-rating.ejs %>
+            <p><%= languagePack[2] %> <%= total %></p>
+        </div>
+    <% } %>
+<% } %>

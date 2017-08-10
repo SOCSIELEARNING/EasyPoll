@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <% include partials/template/head.ejs %>
+    <% include partials/template/public/head.ejs %>
   </head>
   <body>
       <div class="container-fluid" role='main'>
           <div class="panel panel-default">
-                <div class="panel-body">  
-                    <div class="col-md-4">
-                        <% include partials/content/form.ejs %>
-                    </div>
-                    <div class="col-md-2">  
-                        <% include partials/content/ratings.ejs %>
-                    </div>
-                    <div class="col-md-6 hidden-xs">  
-                        <% include partials/content/chart.ejs %>
-                    </div>
-                    <% include partials/template/foot.ejs %>
+              <div class="panel-body">
+                  <% if ( typeof polltype != 'undefined' ) {%>
+                    <% if (polltype==0) {%>
+                        <div class="col-lg-4 col-md-4 col-sm-3 col-xs-6">
+                            <% include partials/content/public/form.ejs %>
+                        </div>
+                        <div class="col-lg-4 col-md-2 col-sm-3 col-xs-6">  
+                            <% include partials/content/public/ratings.ejs %>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6 hidden-xs">  
+                            <% include partials/content/public/chart.ejs %>
+                        </div>
+                    <% } else { %>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <% include partials/content/public/form.ejs %>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <% include partials/content/public/chart.ejs %>
+                        </div>
+                    <% } %>
+             <% } %>
+          <% include partials/content/public/edit.ejs %>
               </div>
           </div>
-      </div>
+        </div>
+      <% include partials/template/public/foot.ejs %>
   </body>
 </html>

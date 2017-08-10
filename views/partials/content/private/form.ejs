@@ -1,0 +1,235 @@
+<% if ( typeof referrer != 'undefined' ) {%>
+<% if ( referrer != '' ) {%>
+<div class="easypoll-settings">
+    <form action="/save?referrer=<%= referrer %>" method="post" id="poll-settings">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <% if ( typeof polllength != 'undefined' ) {%>
+                    <button id="cancel" type="button" class="btn btn-default"><%= languagePack[10] %></button>
+                <% } %>
+                <% if ( typeof allowShare != 'undefined' ) {%>
+                    <% if ( allowShare == true ) {%>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#share"><%= languagePack[11] %></button>
+                    <% } %>
+                <% } %><%= languagePack[12] %></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="validation" class="collapse">
+                                <div class="panel panel-danger">
+                                    <div class="panel-heading"><%= languagePack[13] %></div>
+                                    <div class="panel-body">
+                                        <input type="submit" value="<%= languagePack[14] %>" class="btn btn-default" id="" />
+                                        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#validation"><%= languagePack[15] %></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-sm-5">
+                            <div class="form-group">
+                                <label for="polllength" class="control-label"><%= languagePack[16] %></label>
+                                    <select id="polllength" name="polllength" class="form-control">
+                                        <% if ( typeof polllength != 'undefined' ) {%>
+                                            <option selected><%= polllength %></option>
+                                        <% } else { %>
+                                            <option selected>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                            <option>4</option>
+                                            <option>5</option>
+                                            <option>6</option>
+                                            <option>7</option>
+                                            <option>8</option>
+                                            <option>9</option>
+                                            <option>10</option>
+                                        <% } %>
+                                    </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="polltype" class="control-label"><%= languagePack[17] %></label>
+                                <select id="polltype" name="polltype" class="form-control">
+                                    <% if ( typeof polltype != 'undefined' ) {%>
+                                        <% if ( polltype==1 ) {%>
+                                            <option value="1" selected><%= languagePack[18] %></option>
+                                        <% } else { %>
+                                            <option value="0" selected><%= languagePack[19] %></option>
+                                        <% } %>
+                                    <% } else { %>
+                                        <option value="0" selected><%= languagePack[19] %></option>
+                                        <option value="1"><%= languagePack[18] %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="releasedate" class="control-label"><%= languagePack[20] %></label>
+                                <% if ( typeof releasedate != 'undefined' ) {%>
+                                    <input type="date" name="releasedate" id="releasedate" value="<%= releasedate %>"> <br><%= languagePack[21] %><br><%= languagePack[22] %>
+                                <% } else { %>
+                                    <input type="date" name="releasedate" id="releasedate" value=""> <br><%= languagePack[21] %><br><%= languagePack[22] %>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            <div class="panel panel-warning">
+                                <div class="panel-heading"><%= languagePack[9] %></div>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#validation"><%= languagePack[14] %></button>
+                                        <input type="reset" value="<%= languagePack[23] %>" class="btn btn-default" id="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% if ( typeof polltype != 'undefined' ) {%>
+                        <% if ( polltype==1 ) {%>
+                            <div id="poll-labels" class="">
+                        <% } else { %>
+                            <div id="poll-labels" class="hidden">
+                        <% } %> 
+                    <% } else { %>
+                            <div id="poll-labels" class="hidden">
+                    <% } %>
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Labels</div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-4">
+                                        <label for="label1">Label 1</label>
+                                        <% if ( typeof labels != 'undefined' ) {%>
+                                            <% if ( labels[0]!=undefined ) {%>
+                                                <input type="text" class="form-control lbl" id="label1" name="label1" placeholder="<%= languagePack[24] %>" value="<%= labels[0] %>" required>
+                                            <% } else { %>
+                                                <input type="text" class="form-control lbl" id="label1" name="label1" placeholder="<%= languagePack[24] %>" disabled>
+                                            <% } %>
+                                        <% } else { %>
+                                            <input type="text" class="form-control lbl" id="label1" name="label1" placeholder="<%= languagePack[24] %>" disabled>
+                                        <% } %>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4">
+                                        <label for="label2">Label 2</label>
+                                        <% if ( typeof labels != 'undefined' ) {%>
+                                            <% if ( labels[1]!=undefined ) {%>
+                                                <input type="text" class="form-control lbl" id="label2" name="label2" placeholder="<%= languagePack[24] %>" value="<%= labels[1] %>" required>
+                                            <% } else { %>
+                                                <input type="text" class="form-control lbl" id="label2" name="label2" placeholder="<%= languagePack[24] %>" disabled>
+                                            <% } %>
+                                        <% } else { %>
+                                            <input type="text" class="form-control lbl" id="label2" name="label2" placeholder="<%= languagePack[24] %>" disabled>
+                                        <% } %>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4">
+                                        <label for="label3">Label 3</label>
+                                        <% if ( typeof labels != 'undefined' ) {%>
+                                            <% if ( labels[2]!=undefined ) {%>
+                                                <input type="text" class="form-control lbl" id="label3" name="label3" placeholder="<%= languagePack[24] %>" value="<%= labels[2] %>" required>
+                                            <% } else { %>
+                                                <input type="text" class="form-control lbl" id="label3" name="label3" placeholder="<%= languagePack[24] %>" disabled>
+                                            <% } %>
+                                        <% } else { %>
+                                            <input type="text" class="form-control lbl" id="label3" name="label3" placeholder="<%= languagePack[24] %>" disabled>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            <div class="row">
+                                <div class="col-md-4 col-sm-4">
+                                    <label for="label4">Label 4</label>
+                                    <% if ( typeof labels != 'undefined' ) {%>
+                                            <% if ( labels[3]!=undefined ) {%>
+                                                <input type="text" class="form-control lbl" id="label4" name="label4" placeholder="<%= languagePack[24] %>" value="<%= labels[3] %>" required>
+                                            <% } else { %>
+                                                <input type="text" class="form-control lbl" id="label4" name="label4" placeholder="<%= languagePack[24] %>" disabled>
+                                            <% } %>
+                                        <% } else { %>
+                                            <input type="text" class="form-control lbl" id="label4" name="label4" placeholder="<%= languagePack[24] %>" disabled>
+                                        <% } %>
+                                </div>
+                                <div class="col-md-4 col-sm-4">
+                                    <label for="label5">Label 5</label>
+                                    <% if ( typeof labels != 'undefined' ) {%>
+                                            <% if ( labels[4]!=undefined ) {%>
+                                                <input type="text" class="form-control lbl" id="label5" name="label5" placeholder="<%= languagePack[24] %>" value="<%= labels[4] %>" required>
+                                            <% } else { %>
+                                                <input type="text" class="form-control lbl" id="label5" name="label5" placeholder="<%= languagePack[24] %>" disabled>
+                                            <% } %>
+                                        <% } else { %>
+                                            <input type="text" class="form-control lbl" id="label5" name="label5" placeholder="<%= languagePack[24] %>" disabled>
+                                        <% } %>
+                                </div>
+                                <div class="col-md-4 col-sm-4">
+                                    <label for="label6">Label 6</label>
+                                    <% if ( typeof labels != 'undefined' ) {%>
+                                            <% if ( labels[5]!=undefined ) {%>
+                                                <input type="text" class="form-control lbl" id="label6" name="label6" placeholder="<%= languagePack[24] %>" value="<%= labels[5] %>" required>
+                                            <% } else { %>
+                                                <input type="text" class="form-control lbl" id="label6" name="label6" placeholder="<%= languagePack[24] %>" disabled>
+                                            <% } %>
+                                        <% } else { %>
+                                            <input type="text" class="form-control lbl" id="label6" name="label6" placeholder="<%= languagePack[24] %>" disabled>
+                                        <% } %>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-sm-4">
+                                    <label for="label7">Label 7</label>
+                                    <% if ( typeof labels != 'undefined' ) {%>
+                                            <% if ( labels[6]!=undefined ) {%>
+                                                <input type="text" class="form-control lbl" id="label7" name="label7" placeholder="<%= languagePack[24] %>" value="<%= labels[6] %>" required>
+                                            <% } else { %>
+                                                <input type="text" class="form-control lbl" id="label7" name="label7" placeholder="<%= languagePack[24] %>" disabled>
+                                            <% } %>
+                                        <% } else { %>
+                                            <input type="text" class="form-control lbl" id="label7" name="label7" placeholder="<%= languagePack[24] %>" disabled>
+                                        <% } %>
+                                </div>
+                                <div class="col-md-4 col-sm-4">
+                                    <label for="label8">Label 8</label>
+                                    <% if ( typeof labels != 'undefined' ) {%>
+                                            <% if ( labels[7]!=undefined ) {%>
+                                                <input type="text" class="form-control lbl" id="label8" name="label8" placeholder="<%= languagePack[24] %>" value="<%= labels[7] %>" required>
+                                            <% } else { %>
+                                                <input type="text" class="form-control lbl" id="label8" name="label8" placeholder="<%= languagePack[24] %>" disabled>
+                                            <% } %>
+                                        <% } else { %>
+                                            <input type="text" class="form-control lbl" id="label8" name="label8" placeholder="<%= languagePack[24] %>" disabled>
+                                        <% } %>
+                                </div>
+                                <div class="col-md-4 col-sm-4">
+                                    <label for="label9">Label 9</label>
+                                    <% if ( typeof labels != 'undefined' ) {%>
+                                            <% if ( labels[8]!=undefined ) {%>
+                                                <input type="text" class="form-control lbl" id="label9" name="label9" placeholder="<%= languagePack[24] %>" value="<%= labels[8] %>" required>
+                                            <% } else { %>
+                                                <input type="text" class="form-control lbl" id="label9" name="label9" placeholder="<%= languagePack[24] %>" disabled>
+                                            <% } %>
+                                        <% } else { %>
+                                            <input type="text" class="form-control lbl" id="label9" name="label9" placeholder="<%= languagePack[24] %>" disabled>
+                                        <% } %>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-sm-4">
+                                    <label for="label1">Label 10</label>
+                                    <% if ( typeof labels != 'undefined' ) {%>
+                                            <% if ( labels[9]!=undefined ) {%>
+                                                <input type="text" class="form-control lbl" id="label10" name="label10" placeholder="<%= languagePack[24] %>" value="<%= labels[9] %>" required>
+                                            <% } else { %>
+                                                <input type="text" class="form-control lbl" id="label10" name="label10" placeholder="<%= languagePack[24] %>" disabled>
+                                            <% } %>
+                                        <% } else { %>
+                                            <input type="text" class="form-control lbl" id="label10" name="label10" placeholder="<%= languagePack[24] %>" disabled>
+                                        <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <% include share.ejs %>
+    <% } %>
+<% } %>
+</div>

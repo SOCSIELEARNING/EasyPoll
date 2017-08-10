@@ -1,0 +1,15 @@
+.easypoll-ratings {text-align:center}
+.easypoll-chart {overflow:hidden}
+
+.jumbotron h1 {font-size:2.0em}
+
+#ratings-form, #ratings-form-submit {display:none}
+
+.easypoll-form label {cursor:pointer}
+
+.easypoll-radio {
+    margin-right:15px;
+    border:1px solid silver;
+    border-radius: 10px;
+    padding:10px;
+}

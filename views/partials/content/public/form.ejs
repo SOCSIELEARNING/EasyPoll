@@ -1,0 +1,16 @@
+<% if ( typeof labels != 'undefined' &&  typeof polltype != 'undefined' ) {%>
+    <div class="easypoll-form" data-labels="<%= labels %>" data-polltype="<%= polltype %>">
+        <form action="/results?id=<%= id %>" method="post" id="ratings-form">
+            <div class="form-group">
+                <% if (labels.length!=0) {%>
+                    <% for (var i=0; i<labels.length; i++) { %>
+                        <label for="radio-<%= i %>" class="easypoll-radio radio-inline-0"><input id="radio-<%= i %>" class="radio" type="radio" name="rating" value="<%= i+1 %>" aria-required="true" required><span class="lbl"><%= labels[i] %></span></label>
+                    <% } %>
+                <% } %>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="<%= languagePack[9] %>" class="btn btn-default" id="ratings-form-submit" disabled />
+            </div>
+        </form>
+    </div>
+<% } %>

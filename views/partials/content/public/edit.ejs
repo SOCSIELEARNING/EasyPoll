@@ -1,0 +1,5 @@
+<% if ( typeof id != 'undefined' && typeof isAdmin != 'undefined') {%>
+    <% if ( isAdmin == true ) {%>
+        <a class="btn btn-default pull-right" href="/private?id=<%= id %>"><%= languagePack[8] %></a>
+    <% } %>
+<% } %>

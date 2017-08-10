@@ -1,0 +1,5 @@
+<% if ( typeof ratings != 'undefined' && typeof total != 'undefined' && typeof labels != 'undefined' ) {%>
+    <% if (ratings.length!=0 && total!=0 && labels.length!=0) {%>
+        <div class="easypoll-chart" id="easypoll-chart" data-ratings="<%= ratings %>" data-total="<%= total %>" data-labels="<%= labels %>"></div>
+    <% } %>
+<% } %>

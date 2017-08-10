@@ -1,0 +1,7 @@
+<% if ( typeof languagePack != 'undefined' && typeof releasedate != 'undefined' ) {%>
+    <div class="jumbotron">
+        <h1><%= languagePack[6] %></h1> 
+        <p><%= languagePack[7] %> <%= releasedate %></p> 
+        <% include edit.ejs %>
+    </div>
+<% } %>

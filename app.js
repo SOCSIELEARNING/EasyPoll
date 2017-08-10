@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var results = require('./routes/results');
+var private = require('./routes/private');
+var save = require('./routes/save');
 
 var app = express();
 
@@ -15,8 +17,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 //Development service
 app.set('mongodbaddress', 'mongodb://localhost:27017/easypoll_development');
-app.set('languagePack', ['EasyPoll', 'Select a star to add your rating to this item', 'Responses:', 'Average', 'No referrer found', 'Unauthorised access']);
+app.set('languagePack', ['EasyPoll', 'Select a star to add your rating to this item', 'Responses:', 'Average', 'No referrer found', 'Unauthorised access', 'Sorry, the results of this poll are not available yet', 'Results will be released on the following date: ', 'Manage Poll', 'Save', 'Back', 'Share', 'Poll Manager', 'Add/Update the Poll?', 'Yes', 'No', 'Number of Choices', 'Type of Poll', 'Custom Label', 'Star Rating', 'Release Results on a Particular Date', 'Format: yy-mm-dd', '(Leave blank to show results immediately)', 'Reset', 'Label', 'Share poll', 'URL', 'Embed code', 'Open in a new window']);
 app.set('whitelist', []);
+app.set('allowShare', true);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -28,6 +31,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/results', results);
+app.use('/private', private);
+app.use('/save', save);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

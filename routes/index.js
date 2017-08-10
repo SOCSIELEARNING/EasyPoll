@@ -1,24 +1,22 @@
 var express = require('express');
 var router = express.Router();
 
-var url = require('url');
-
 var sanitizeHtml = require('sanitize-html');
 
 var mongoclient = require('mongodb').MongoClient;
 var assert = require('assert');
 
-var id = '';
-var referrer = '';
-var total = 0;
-var rating = 0;
-var ratings = [];
-var labels = [];
-
 var findReferrer = function(db, query, callback) {
    //Create index on referrer to ensure no duplicates and allowed, needed for upsert
    db.collection('polls').createIndex( {'referrer': 1}, { unique: true } )
    var cursor = db.collection('polls').find( query );
+   var id = ''; 
+   var total = 0;
+   var rating = 0;
+   var labels = [];
+   var ratings = [];
+   var polltype = 0;
+   var releasedate = '';
    cursor.each(function(err, doc) {
       //assert.equal(err, null);
       if (doc != null) {
@@ -41,41 +39,26 @@ var findReferrer = function(db, query, callback) {
           if (doc.ratings!=undefined) {
               ratings = doc.ratings;
           }
+          if (doc.polltype!=undefined) {
+              if (isNaN(Number(doc.polltype))==false) {
+                polltype = doc.polltype;
+              }
+          }
+          if (doc.releasedate!=undefined) {
+              releasedate = doc.releasedate;
+          }
         } else {
           console.log ('Finished searching database for referrer - Exiting');
-          callback();
+          callback(id, total, rating, labels, ratings, polltype, releasedate);
       }
    });
 };
-var insertRecord = function(db, req, callback) {
-    console.log ('Creating empty record using update to make sure no duplicates are created');
-    db.collection('polls').update(
-        { referrer: referrer },
-        {
-            //Only update if a new document is inserted
-            $setOnInsert: { total: 0, rating: 0, ratings: [], referrer: referrer, creator: '', title: '', description: '', responselimit: 1, chngresponse: false, creationdate: new Date(), releasedate: new Date(), manualrelease: false, labels: ['1','2','3','4','5'], entries: [], flag1: false, flag2: false, flag3: false, meta1: '', meta2: '', meta3: '' }
-        },
-            //Inserts a single document if non exists
-        { upsert: true },
-        function(err, result) {
-            //assert.equal(err, null);
-            callback();
-    }); 
-};
-
-var getFormattedUrl = function(req) {
-    return url.format({
-        protocol: req.protocol,
-        host: req.get('host'),
-        pathname: req.originalUrl
-    });
-}
 
 var checkAgainstWhitelist = function(referrer, whitelist) {
     var isFound=false;
     if (whitelist.length > 0) {
         for (var i=0; i<whitelist.length; ++i) {
-            if ((whitelist[i]).indexOf(referrer)!=-1) {
+            if ((referrer).indexOf(whitelist[i])!=-1) {
                 isFound=true;
             }
         }
@@ -85,39 +68,76 @@ var checkAgainstWhitelist = function(referrer, whitelist) {
     return (isFound);
 }
 
+var generateShareAddress = function(req, referrer) {
+    var shareAddress='';
+    if (req.get('host')!=undefined && req.protocol!=undefined) {
+        shareAddress = (req.protocol + '://' + req.get('host') + '?poll=' + referrer);
+    }
+    return (shareAddress);
+}
+
+var confirmAdmin = function() {
+    //Add custom rights handling
+    return (true)
+}
+
 router.get('/', function(req, res, next) {
     var mongodbaddress = req.app.get('mongodbaddress');
-    id = '';
-    referrer = (sanitizeHtml(getFormattedUrl(req))).replace(/[^A-Za-z0-9]/g, '');
-    if (referrer!='') {
-        var whiteListed = checkAgainstWhitelist(referrer, req.app.get('whitelist'));
-        if (whiteListed==true) {
-            total = 0;
-            rating = 0;
-            ratings = [];
-            labels = [];
-            console.log ('Instance referrer: ' + referrer);
-            mongoclient.connect(mongodbaddress, function(err, db) {
-                //assert.equal(null, err);
-                findReferrer(db, {'referrer': referrer}, function() {
-                    if (id!='') {
-                        db.close();
-                        res.render('index', { languagePack: req.app.get('languagePack'), id: id, total: total, rating: rating, ratings: ratings, labels: labels});
-                    } else {                    
-                        insertRecord(db, req, function() {
-                            findReferrer(db, {'referrer': referrer}, function() {
-                                db.close();
-                                res.render('index', { languagePack: req.app.get('languagePack'), id: id, total: total, rating: rating, ratings: ratings, labels: labels});
-                            });
-                        });
-                    }
-                });
-            });
-        } else {
-            res.render('error', { message: (req.app.get('languagePack'))[5], error: {status: null, stack: null}});
+    var referrer = '';
+    if (req.originalUrl!=undefined) {
+        var query = ((req.originalUrl).toString()).split('?');
+        if (query.length>=2) {
+            var queryarray = (query[1]).split('&');
+            if (queryarray.length>0) {
+                var params = new Object();
+                for(var i=0; i<queryarray.length; i++) {	
+				    params[(queryarray[i].split('='))[0]] = (queryarray[i].split('='))[1];	
+			     }
+                if (params.poll!=undefined) {
+                    referrer = (sanitizeHtml(params.poll)).replace(/[^A-Za-z0-9]/g, '');
+                }
+            }
         }
-    } else {
-        res.render('error', { message: (req.app.get('languagePack'))[4], error: {status: null, stack: null}});
+        if (referrer!='') {
+            var whiteListed = checkAgainstWhitelist(referrer, req.app.get('whitelist'));
+            if (whiteListed==true) {
+                var shareAddress=generateShareAddress(req, referrer);
+                var isAdmin = confirmAdmin();
+                console.log ('Instance referrer: ' + referrer);
+                mongoclient.connect(mongodbaddress, function(err, db) {
+                    //assert.equal(null, err);
+                    findReferrer(db, {'referrer': referrer}, function(id, total, rating, labels, ratings, polltype, releasedate) {
+                        if (id!='') {
+                            db.close();
+                            if (releasedate!='') {
+                                var currDate = new Date();
+                                var targetDate = new Date(releasedate);
+                                if (targetDate=='Invalid Date') {
+                                    res.render('index', { languagePack: req.app.get('languagePack'), id: id, total: total, rating: rating, ratings: ratings, labels: labels, polltype: polltype, isAdmin: isAdmin});
+                                } else if (targetDate<=currDate) {
+                                    res.render('index', { languagePack: req.app.get('languagePack'), id: id, total: total, rating: rating, ratings: ratings, labels: labels, polltype: polltype, isAdmin: isAdmin});
+                                } else {
+                                    res.render('splash', { languagePack: req.app.get('languagePack'), id: id, releasedate: releasedate, polltype: polltype, isAdmin: isAdmin}); 
+                                }
+                            } else {
+                                res.render('index', { languagePack: req.app.get('languagePack'), id: id, total: total, rating: rating, ratings: ratings, labels: labels, polltype: polltype, isAdmin: isAdmin});
+                            }
+                        } else {
+                            db.close();
+                            if (isAdmin==true) {
+                                res.render('private', { languagePack: req.app.get('languagePack'), referrer: referrer, isAdmin: isAdmin, allowShare: req.app.get('allowShare'), shareAddress: shareAddress });
+                            } else {
+                                res.render('error', { message: (req.app.get('languagePack'))[6], error: {status: null, stack: null}});
+                            }
+                        }
+                    });
+                });
+            } else {
+                res.render('error', { message: (req.app.get('languagePack'))[5], error: {status: null, stack: null}});
+            }
+        } else {
+            res.render('error', { message: (req.app.get('languagePack'))[4], error: {status: null, stack: null}});
+        }
     }
 });
 
