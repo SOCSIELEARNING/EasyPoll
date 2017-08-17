@@ -20,6 +20,7 @@ app.set('mongodbaddress', 'mongodb://localhost:27017/easypoll_development');
 app.set('languagePack', ['EasyPoll', 'Select a star to add your rating to this item', 'Responses:', 'Average', 'No referrer found', 'Unauthorised access', 'Sorry, the results of this poll are not available yet', 'Results will be released on the following date: ', 'Manage Poll', 'Save', 'Back', 'Share', 'Poll Manager', 'Add/Update the Poll?', 'Yes', 'No', 'Number of Choices', 'Type of Poll', 'Custom Label', 'Star Rating', 'Release Results on a Particular Date', 'Format: yy-mm-dd', '(Leave blank to show results immediately)', 'Reset', 'Label', 'Share poll', 'URL', 'Embed code', 'Open in a new window']);
 app.set('whitelist', []);
 app.set('allowShare', true);
+app.set('isAdmin', true);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

@@ -63,18 +63,28 @@ var generateShareAddress = function(req, referrer) {
     return (shareAddress);
 }
 
+var authenticateUser = function(req) {
+    //Add custom authentication
+    return (req.app.get('isAdmin'))
+}
+
 router.get('/', function(req, res, next) {
     if (req.headers.referer!='' && req.query.id!=undefined) {
+        var mongodbaddress = req.app.get('mongodbaddress');
         var whiteListed = checkAgainstWhitelist(req.headers.referer, req.app.get('whitelist'));
         if (whiteListed==true) {  
-            var mongodbaddress = req.app.get('mongodbaddress');
             mongoclient.connect(mongodbaddress, function(err, db) {
                 //assert.equal(null, err);
                 findRecord(db, {'_id': objectid(req.query.id)}, function(id, referrer, labels, polltype, releasedate) {
-                    var shareAddress=generateShareAddress(req, referrer);
+                    var shareAddress = generateShareAddress(req, referrer);
+                    var isAdmin = authenticateUser(req);
                     if (id!='') {
                         db.close();
-                        res.render('private', { languagePack: req.app.get('languagePack'), referrer: referrer, labels: labels, polllength: labels.length, polltype: polltype, releasedate: releasedate, allowShare: req.app.get('allowShare'), shareAddress: shareAddress });
+                        if (isAdmin==true) {
+                            res.render('private', { languagePack: req.app.get('languagePack'), referrer: referrer, labels: labels, polllength: labels.length, polltype: polltype, releasedate: releasedate, isAdmin: isAdmin, allowShare: req.app.get('allowShare'), shareAddress: shareAddress });
+                        } else {
+                            res.render('error', { message: (req.app.get('languagePack'))[5], error: {status: null, stack: null}});
+                        }
                     } else {
                          db.close();
                          res.redirect (req.headers.referer);

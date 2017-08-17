@@ -94,6 +94,7 @@ var formatLabels = function(polltype, polllength, req) {
 
 router.post('/', function(req, res, next) {
     if (req.query.referrer!=undefined && req.body.polltype!=undefined && req.body.polllength!=undefined) {
+        var mongodbaddress = req.app.get('mongodbaddress');
         var referrer = (sanitizeHtml(req.query.referrer));
         var whiteListed = checkAgainstWhitelist(referrer, req.app.get('whitelist'));
         if (whiteListed==true  && typeof(Number(sanitizeHtml(req.body.polltype)))=='number' && typeof(Number(sanitizeHtml(req.body.polllength)))=='number') {
@@ -105,7 +106,6 @@ router.post('/', function(req, res, next) {
                     releasedate = (sanitizeHtml(req.body.releasedate));
                 }
             }
-            var mongodbaddress = req.app.get('mongodbaddress');
             mongoclient.connect(mongodbaddress, function(err, db) {
                 //assert.equal(null, err);
                 findReferrer(db, {'referrer': referrer}, function(id) {

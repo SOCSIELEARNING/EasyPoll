@@ -52,9 +52,9 @@ var checkAgainstWhitelist = function(referrer, whitelist) {
 
 router.post('/', function(req, res, next) {
     if (req.headers.referer!='' && req.query.id!=undefined) {
+        var mongodbaddress = req.app.get('mongodbaddress');
         var whiteListed = checkAgainstWhitelist(req.headers.referer, req.app.get('whitelist'));
         if (whiteListed==true &&  typeof(Number(sanitizeHtml(req.body.rating)))=='number') {    
-            var mongodbaddress = req.app.get('mongodbaddress');
             mongoclient.connect(mongodbaddress, function(err, db) {
                 //assert.equal(null, err);
                 findRecord(db, {'_id': objectid(req.query.id)}, function(rating, total, ratings) {

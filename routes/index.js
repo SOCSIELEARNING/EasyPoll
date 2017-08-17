@@ -6,6 +6,8 @@ var sanitizeHtml = require('sanitize-html');
 var mongoclient = require('mongodb').MongoClient;
 var assert = require('assert');
 
+var defaultRecord = {polltype: 0, releasedate: '', labels: ['1','2','3','4','5']};
+
 var findReferrer = function(db, query, callback) {
    //Create index on referrer to ensure no duplicates and allowed, needed for upsert
    db.collection('polls').createIndex( {'referrer': 1}, { unique: true } )
@@ -54,6 +56,22 @@ var findReferrer = function(db, query, callback) {
    });
 };
 
+var insertRecord = function(db, req, referrer, polltype, releasedate, labels, callback) {
+    console.log ('Creating empty record using update to make sure no duplicates are created');
+    db.collection('polls').update(
+        { referrer: referrer },
+        {
+            //Only update if a new document is inserted
+            $setOnInsert: { total: 0, rating: 0, ratings: [], referrer: referrer, creator: '', title: '', description: '', responselimit: 1, chngresponse: false, creationdate: new Date(), releasedate: releasedate, manualrelease: false, labels: labels, entries: [], polltype: polltype, flag1: false, flag2: false, flag3: false, meta1: '', meta2: '', meta3: '' }
+        },
+            //Inserts a single document if none exists
+        { upsert: true },
+        function(err, result) {
+            //assert.equal(err, null);
+            callback();
+    }); 
+};
+
 var checkAgainstWhitelist = function(referrer, whitelist) {
     var isFound=false;
     if (whitelist.length > 0) {
@@ -76,33 +94,37 @@ var generateShareAddress = function(req, referrer) {
     return (shareAddress);
 }
 
-var confirmAdmin = function() {
-    //Add custom rights handling
-    return (true)
+var authenticateUser = function(req) {
+    //Add custom authentication
+    return (req.app.get('isAdmin'))
+}
+var parseReferrer = function(param) {
+    var str = '';
+    var query = ((param).toString()).split('?');
+    if (query.length>=2) {
+        var queryarray = (query[1]).split('&');
+        if (queryarray.length>0) {
+            var params = new Object();
+            for(var i=0; i<queryarray.length; i++) {	
+                params[(queryarray[i].split('='))[0]] = (queryarray[i].split('='))[1];	
+            }
+            if (params.poll!=undefined) {
+                str = (sanitizeHtml(params.poll)).replace(/[^A-Za-z0-9]/g, '');
+            }
+        }
+    }
+    return (str);
 }
 
 router.get('/', function(req, res, next) {
-    var mongodbaddress = req.app.get('mongodbaddress');
-    var referrer = '';
     if (req.originalUrl!=undefined) {
-        var query = ((req.originalUrl).toString()).split('?');
-        if (query.length>=2) {
-            var queryarray = (query[1]).split('&');
-            if (queryarray.length>0) {
-                var params = new Object();
-                for(var i=0; i<queryarray.length; i++) {	
-				    params[(queryarray[i].split('='))[0]] = (queryarray[i].split('='))[1];	
-			     }
-                if (params.poll!=undefined) {
-                    referrer = (sanitizeHtml(params.poll)).replace(/[^A-Za-z0-9]/g, '');
-                }
-            }
-        }
+        var mongodbaddress = req.app.get('mongodbaddress');
+        var referrer = parseReferrer(req.originalUrl);
         if (referrer!='') {
             var whiteListed = checkAgainstWhitelist(referrer, req.app.get('whitelist'));
             if (whiteListed==true) {
                 var shareAddress=generateShareAddress(req, referrer);
-                var isAdmin = confirmAdmin();
+                var isAdmin = authenticateUser(req);
                 console.log ('Instance referrer: ' + referrer);
                 mongoclient.connect(mongodbaddress, function(err, db) {
                     //assert.equal(null, err);
@@ -123,11 +145,16 @@ router.get('/', function(req, res, next) {
                                 res.render('index', { languagePack: req.app.get('languagePack'), id: id, total: total, rating: rating, ratings: ratings, labels: labels, polltype: polltype, isAdmin: isAdmin});
                             }
                         } else {
-                            db.close();
                             if (isAdmin==true) {
+                                db.close();
                                 res.render('private', { languagePack: req.app.get('languagePack'), referrer: referrer, isAdmin: isAdmin, allowShare: req.app.get('allowShare'), shareAddress: shareAddress });
                             } else {
-                                res.render('error', { message: (req.app.get('languagePack'))[6], error: {status: null, stack: null}});
+                                insertRecord(db, req, referrer, defaultRecord.polltype, defaultRecord.releasedate, defaultRecord.labels, function() {
+                                    findReferrer(db, {'referrer': referrer}, function(id, total, rating, labels, ratings, polltype, releasedate) {
+                                        db.close();
+                                        res.render('index', { languagePack: req.app.get('languagePack'), id: id, total: total, rating: rating, ratings: ratings, labels: labels, polltype: polltype, isAdmin: isAdmin});
+                                    });
+                                });
                             }
                         }
                     });
