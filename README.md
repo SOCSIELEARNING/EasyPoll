@@ -11,9 +11,10 @@ e.g. iframe src="https://example.com/?poll=@X@course.pk_string@X@@X@content.url@
 
 ### Blackboard variables used
 
-ul
-li @X@course.pk_string@X@ = Unique course id
-li @X@content.url@X@ = Unique content item id
+
+**@X@course.pk_string@X@** = Unique course id
+
+**@X@content.url@X@** = Unique content item id
 
 ![Image representing EasyPoll](public/images/easypoll.png?raw=true "Image representing EasyPoll")
 
