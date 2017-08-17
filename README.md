@@ -21,6 +21,4 @@ Node.js and MongoDB
 
 [mongodb.com](https://www.mongodb.com/)
 
-### Original source
-
-[github.com/chrisjohndigital](https://github.com/chrisjohndigital/EasyPoll)
+[nodejs.org](https://nodejs.org/)
