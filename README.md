@@ -5,7 +5,7 @@ Lightweight, easy to use polling tool that allows teaching staff to gather async
 
 ## Blackboard embed code
 
-&lt;iframe width="100%" height="280" src="https://example.com/?poll=@X@course.pk_string@X@@X@content.url@X@"&gt;&lt;/iframe&gt;
+<iframe width="100%" height="280" src="https://example.com/?poll=@X@course.pk_string@X@@X@content.url@X@"></iframe>
 
 ![Image representing EasyPoll](public/images/easypoll.png?raw=true "Image representing EasyPoll")
 
